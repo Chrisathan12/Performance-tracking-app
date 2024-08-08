@@ -11,6 +11,7 @@ from .asignatura_view import AsignaturaViewSet
 from .docente_view import DocenteViewSet
 from .capacitacion_api_view import CapacitacionAPIView
 from .silabo_api_view import SilaboAPIView
+from .puntuacion_docente_api_view import PuntuacionDocenteAPIView
 
 _all_ = [
     'DisparadorViewSet',
@@ -19,5 +20,6 @@ _all_ = [
     'AsistenciaAPIView',
     'CronogramaAPIView',
     'TemaCronogramaAPIView',
-    'CapacitacionAPIView'
+    'CapacitacionAPIView',
+    'PuntuacionDocenteAPIView'
 ]

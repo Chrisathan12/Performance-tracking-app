@@ -20,12 +20,12 @@ class CapacitacionAPIView(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     service = CapacitacionService()
 
-    @action(detail=False, methods=['get'], url_path='(?P<id_docente>[^/.]+)/capacitaciones')
+    @action(detail=False, methods=['get'], url_path='capacitaciones/(?P<id_docente>[^/.]+)')
     def get_lista_capacitaciones_docente(self, request, id_docente):
-        self.service.id_docente = id_docente
         try:
-            docente = self.service.get_lista_capacitaciones(id_docente)
-            return Response(docente, status=status.HTTP_200_OK)
+            capacitaciones = self.service.get_lista_capacitaciones(id_docente)
+            serializer = CapacitacionSerializer(capacitaciones, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectNotFound as e:
             return Response({'Error': e.detail}, status=status.HTTP_404_NOT_FOUND)
 
@@ -46,23 +46,6 @@ class CapacitacionAPIView(viewsets.ModelViewSet):
         except ObjectNotFound as e:
             return Response({'Error': e.detail}, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=['get'], url_path='capacitaciones/(?P<id_docente>[^/.]+)')
-    def get_lista_capacitaciones(self, request):
-        try:
-            capacitaciones = self.service.get_lista_all_capacitaciones()
-            serializer = CapacitacionSerializer(capacitaciones, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except ObjectNotFound as e:
-            return Response({'Error': e.detail}, status=status.HTTP_404_NOT_FOUND)
-
-    @action(detail=False, methods=['get'], url_path='(?P<id_docente>[^/.]+)/puntuacionesViejas')
-    def get_lista_puntaje_docente(self, request, id_docente):
-        try:
-            puntuaciones = self.service.get_lista_puntuaciones(id_docente)
-            serializer = CapacitacionSerializer(puntuaciones, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except ObjectNotFound as e:
-            return Response({'Error': e.detail}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['post'], url_path='capacitacion')
     def create_capacitacion(self, request):

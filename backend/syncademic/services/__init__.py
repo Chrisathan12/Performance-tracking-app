@@ -11,5 +11,6 @@ from syncademic.services.tema_cronograma_service import TemaCronogramaService
 
 from syncademic.services.capacitacion_service import CapacitacionService
 from syncademic.services.asignatura_service import AsignaturaService
+from syncademic.services.puntuacion_docente_service import PuntuacionDocenteService
 
 

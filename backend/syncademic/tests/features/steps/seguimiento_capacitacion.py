@@ -54,17 +54,13 @@ def step_impl(context, area):
 @step('su puntuación final será de "{puntuacion_final}"')
 def step_impl(context, puntuacion_final):
     context.docente.puntaje_actual = int(context.docente.puntaje_actual)
-    area_encontrada = False
+
     for area_dict in context.areas_afines:
         area_afine = area_dict.get('area')
         if context.area == area_afine:
             area_encontrada = True
+            context.docente.puntaje_actual += 1
             break
-
-    if area_encontrada:
-        context.docente.puntaje_actual += 5
-    else:
-        context.docente.puntaje_actual += 2
 
     context.docente.save()
     puntuacion_final = int(puntuacion_final)

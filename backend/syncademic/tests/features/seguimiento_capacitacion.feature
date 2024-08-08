@@ -18,8 +18,8 @@ Esquema del escenario: Puntuación de capacitaciones por area afín
   Entonces su puntuación final será de "<puntuacion_final>"
   Ejemplos:
     | areas_afines        | puntuacion_inicial | area          | puntuacion_final |
-    | Matematicas,Fisica  | 117                 | Matematicas   | 122               |
-    | Matematicas,Fisica  | 122                 | Historia      | 124               |
+    | Matematicas,Fisica  | 124                 | Matematicas   | 125               |
+    | Matematicas,Fisica  | 125                 | Historia      | 125               |
 
 Esquema del escenario: Identificación de incumplimiento en el registro de capacitaciones
   Dado que el docente tiene "<capacitaciones>" registradas

@@ -14,26 +14,6 @@ class CapacitacionService:
         self.area_capacitacion = None
 
     # Lista de Puntuaciones
-    def get_lista_puntuaciones(self, id_docente):
-        puntuaciones = Puntuacion_docente.objects.filter(
-            id_docente__id_docente=id_docente
-        ).values('id_puntuacion', 'id_docente', 'periodo', 'puntaje')
-        if puntuaciones is None:
-            raise ObjectNotFound(Capacitacion._meta.model_name,
-                                 "No se han encontrado registros para los parámetros dados")
-        else:
-            return puntuaciones
-
-    # Lista de capacitaciones de docente
-    def get_lista_capacitaciones(self, id_docente):
-        capacitaciones = Capacitacion.objects.filter(
-            docente__id_docente=id_docente
-        ).values('id_capacitacion', 'nombre_capacitacion', 'area', 'periodo')
-        if capacitaciones is None:
-            raise ObjectNotFound(Capacitacion._meta.model_name,
-                                 "No se han encontrado registros para los parámetros dados")
-        else:
-            return capacitaciones
 
     def get_lista_docentes(self):
         docentes = Docente.objects.values('id_docente', 'nombre', 'carrera', 'correo', 'estado_capacitacion', 'puntaje_actual')
@@ -50,8 +30,8 @@ class CapacitacionService:
         except Exception as e:
             raise ObjectNotFound(Docente._meta.model_name, detail=str(e))
 
-    def get_lista_all_capacitaciones(self):
-        capacitaciones = Capacitacion.objects.select_related('docente', 'periodo').all()
+    def get_lista_capacitaciones(self, id_docente):
+        capacitaciones = Capacitacion.objects.select_related('docente', 'periodo').filter(docente_id=id_docente)
         return capacitaciones
 
     def save_capacitacion(self, data):
