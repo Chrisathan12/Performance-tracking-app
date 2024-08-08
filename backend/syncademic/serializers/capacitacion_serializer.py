@@ -11,17 +11,3 @@ class CapacitacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capacitacion
         fields = '__all__'
-
-
-class ListaCapacitacionSerializer(serializers.ModelSerializer):
-    """ Lista de capacitaciones.
-
-        Utilizado para Feature 8
-        Creado por Christopher Zambrano
-    """
-    class Meta:
-        model = Capacitacion
-        fields = [
-            "id_capacitacion",
-            "nombre_capacitacion"
-        ]

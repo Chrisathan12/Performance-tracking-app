@@ -19,4 +19,5 @@ _all_ = [
     'AsistenciaAPIView',
     'CronogramaAPIView',
     'TemaCronogramaAPIView',
+    'CapacitacionAPIView'
 ]

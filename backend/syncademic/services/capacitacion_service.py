@@ -4,7 +4,6 @@ from ..models.docente import Docente
 from ..models.capacitacion import Capacitacion
 from ..models.puntuacion_docente import Puntuacion_docente
 
-
 class CapacitacionService:
 
     def __init__(self):
@@ -37,7 +36,7 @@ class CapacitacionService:
             return capacitaciones
 
     def get_lista_docentes(self):
-        docentes = Docente.objects.values('id_docente', 'nombre', 'carrera', 'correo')
+        docentes = Docente.objects.values('id_docente', 'nombre', 'carrera', 'correo', 'estado_capacitacion', 'puntaje_actual')
         return docentes
 
     def get_docente(self, id_docente):
@@ -51,50 +50,23 @@ class CapacitacionService:
         except Exception as e:
             raise ObjectNotFound(Docente._meta.model_name, detail=str(e))
 
-
     def get_lista_all_capacitaciones(self):
-        capacitaciones = Docente.objects.values('id_capacitacion', 'docente', 'nombre', 'area', 'periodo')
+        capacitaciones = Capacitacion.objects.select_related('docente', 'periodo').all()
         return capacitaciones
-
-    # notas de un estudiante basado en el periodo, grupo y asignatura
-    def get_nota_capacitacion_docente(self, id_docente, capacitaciones) -> int:
-        nota_docente = 0
-        try:
-            for capacitacion in capacitaciones:
-                nota_docente += self.get_nota_docente(id_docente, capacitacion.get('area'))
-
-            return nota_docente
-        except Exception as e:
-            print(e)
-
-    def get_nota_docente(self, id_docente, area) -> int:
-        nota = 2
-        if self.get_area_docente(id_docente) == area:
-            nota = 5
-        return nota
-
-    def get_area_docente(self, id_docente) -> str:
-        asignaturas = Asignatura.objects.filter(
-            docente__id_docente=id_docente
-        ).values('area')
-        return asignaturas[0].get('area')
 
     def save_capacitacion(self, data):
         try:
-
-            docente_bd = Docente.objects.get(id_docente=1)
+            docente_bd = Docente.objects.get(id_docente=data['id_docente'])
 
             Capacitacion.objects.create(
-                docente=data.docente_bd,
-                nombre_capacitacion=data.nombre_capacitacion,
-                area=data.nombre_capacitacion,
-                periodo=data.periodo
+                docente=docente_bd,
+                nombre_capacitacion=data['nombre_capacitacion'],
+                area=data['area'],
+                periodo=data['periodo']
             )
 
-            docente_bd.save()
-
         except Exception as e:
-            raise ObjectNotFound(Docente._meta.model_name, detail=str(e))
+            raise ObjectNotFound(Capacitacion._meta.model_name, detail=str(e))
 
     def get_alertas(self):
         alerta = {

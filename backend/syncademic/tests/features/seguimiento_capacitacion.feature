@@ -4,6 +4,8 @@
 # Feature 8
 # Grupo 4: Sebastian Moyano, Luis De La Cruz, Christopher Zambrano
 
+
+
 Característica: Seguimiento de capacitaciones
   Como institución
   quiero llevar un seguimiento de la capacitación de los docentes
@@ -13,11 +15,11 @@ Esquema del escenario: Puntuación de capacitaciones por area afín
   Dado que un docente tiene como areas afines "<areas_afines>"
   Y tiene una puntuacion inicial de "<puntuacion_inicial>"
   Cuando el docente registra una capacitación en el área de "<area>"
-  Entonces su puntuación final será de <puntuacion_final>
+  Entonces su puntuación final será de "<puntuacion_final>"
   Ejemplos:
     | areas_afines        | puntuacion_inicial | area          | puntuacion_final |
-    | Matematicas,Fisica  | 80                 | Matematicas   | 85               |
-    | Matematicas,Fisica  | 80                 | Historia      | 82               |
+    | Matematicas,Fisica  | 117                 | Matematicas   | 122               |
+    | Matematicas,Fisica  | 122                 | Historia      | 124               |
 
 Esquema del escenario: Identificación de incumplimiento en el registro de capacitaciones
   Dado que el docente tiene "<capacitaciones>" registradas

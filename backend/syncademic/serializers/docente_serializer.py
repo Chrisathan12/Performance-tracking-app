@@ -8,11 +8,3 @@ class DocenteSerializer(serializers.ModelSerializer):
         model = Docente
         fields = '__all__'
 
-
-class ListaDocenteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Docente
-        fields = [
-            "id_docente",
-            "nombre_docente"
-        ]
