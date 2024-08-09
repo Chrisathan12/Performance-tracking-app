@@ -22,3 +22,11 @@ class AsignaturaViewSet(viewsets.ModelViewSet):
             return Response(areas, status=status.HTTP_200_OK)
         except ObjectNotFound as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['get'], url_path='areas')
+    def obtener_areas(self, request):
+        try:
+            areas = self.service.get_areas()
+            return Response(areas, status=status.HTTP_200_OK)
+        except ObjectNotFound as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)

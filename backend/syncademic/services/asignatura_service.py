@@ -18,3 +18,9 @@ class AsignaturaService:
                                  "No se ha encontrado registros")
         else:
             return areas
+
+    def get_areas(self):
+        areas = Asignatura.objects.all().values('area')
+        if not areas.exists():
+            raise ObjectNotFound(Asignatura._meta.model_name, "No se han encontrado registros")
+        return areas
