@@ -9,4 +9,5 @@ from .cronograma_serializer import CronogramaSerializer
 from .tema_cronograma_serializer import TemaCronogramaSerializer
 from .capacitacion_serializer import CapacitacionSerializer
 from .puntuacion_docente_serializer import PuntuacionesDocenteSerializer
+from .periodo_serializer import PeriodoSerializer
 

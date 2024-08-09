@@ -12,11 +12,10 @@ class PuntuacionDocenteAPIView(viewsets.ModelViewSet):
     serializer_class = PuntuacionesDocenteSerializer
     service = PuntuacionDocenteService()
 
-    @action(detail=False, methods=['get'], url_path='puntuacionesViejas/(?P<id_docente>[^/.]+)')
+    @action(detail=False, methods=['get'], url_path='historialPuntuaciones/(?P<id_docente>[^/.]+)')
     def get_lista_puntaje_docente(self, request, id_docente):
         try:
             puntuaciones = self.service.get_lista_puntuaciones(id_docente)
-            serializer = PuntuacionesDocenteSerializer(puntuaciones, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(puntuaciones, status=status.HTTP_200_OK)
         except ObjectNotFound as e:
             return Response({'Error': e.detail}, status=status.HTTP_404_NOT_FOUND)

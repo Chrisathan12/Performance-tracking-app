@@ -8,7 +8,7 @@ class PuntuacionDocenteService:
         self.periodo_id = None
 
     def get_lista_puntuaciones(self, id_docente):
-        puntuaciones = Puntuacion_docente.objects.filter(id_docente=id_docente)
+        puntuaciones = Puntuacion_docente.objects.filter(id_docente=id_docente).select_related('periodo').values('puntaje', 'periodo__nombre')
 
         if not puntuaciones.exists():
             raise ObjectNotFound(Puntuacion_docente._meta.model_name,
