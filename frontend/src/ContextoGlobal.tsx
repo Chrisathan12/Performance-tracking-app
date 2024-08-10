@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode, useContext } from 'react'
 import { Estudiante } from './types/Estudiantes';
-import { Profesor } from './types/Capacitaciones';
+import { Docente } from './types/Capacitaciones';
 
 
 type contextoType = {
@@ -8,8 +8,8 @@ type contextoType = {
     setPaginaActual: (paginaActual: string) => void;
     listaEstudiantes: Estudiante[];
     setListaEstudiantes: (listaEstudiantes: Estudiante[]) => void;
-    profesor: Profesor | null;
-    setProfesor: (profesor: Profesor | null) => void;
+    docente: Docente | null;
+    setDocente: (profesor: Docente | null) => void;
     rol: string;
     setRol: (modo: string) => void;
     usuario: string;
@@ -27,7 +27,7 @@ const ContextoGlobal = createContext<contextoType | undefined>(undefined)
 export function ProveedorContextoGlobal({ children }: { children: ReactNode }) {
     const [paginaActual, setPaginaActual] = useState<string>('')
     const [listaEstudiantes, setListaEstudiantes] = useState<Estudiante[]>([])
-    const [profesor, setProfesor] = useState<Profesor | null>(null);
+    const [docente, setDocente] = useState<Docente | null>(null);
     const [rol, setRol] = useState<string>('');
     const [usuario, setUsuario] = useState<string>('');
     const [asignatura, setAsignatura] = useState<number>(0);
@@ -35,7 +35,7 @@ export function ProveedorContextoGlobal({ children }: { children: ReactNode }) {
     const [periodoActivo, setPeriodoActivo] = useState<number>(6);
 
     return (
-        <ContextoGlobal.Provider value={{ paginaActual, setPaginaActual, listaEstudiantes, setListaEstudiantes, profesor, setProfesor, rol, setRol, usuario, setUsuario, asignatura, setAsignatura, curso, setCurso, periodoActivo, setPeriodoActivo }}>
+        <ContextoGlobal.Provider value={{ paginaActual, setPaginaActual, listaEstudiantes, setListaEstudiantes, docente, setDocente, rol, setRol, usuario, setUsuario, asignatura, setAsignatura, curso, setCurso, periodoActivo, setPeriodoActivo }}>
             {children}
         </ContextoGlobal.Provider>
     )

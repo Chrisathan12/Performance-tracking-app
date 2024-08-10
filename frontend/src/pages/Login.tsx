@@ -1,17 +1,33 @@
 /**
  * Creado por: David Torres
  */
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useContextoGlobal } from '../ContextoGlobal';
+import { obtenerDocentePorId } from '../services/Capacitaciones';
+
 import '../styles/pages/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const { setPaginaActual, setRol,setUsuario } = useContextoGlobal(); // Hook para actualizar la página actual
+  const { setPaginaActual, setRol, setUsuario, setDocente } = useContextoGlobal(); 
+
+  useEffect(() => {
+    const cargarDocente = async () => {
+      try {
+        const profesor = await obtenerDocentePorId(1); 
+        setDocente(profesor);
+        setUsuario(profesor.nombre);
+      } catch (error) {
+        console.error('Error al cargar docente:', error);
+      }
+    };
+
+    cargarDocente();
+  }, [setDocente]);
 
   const handleLogin = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent form from refreshing the page
+    e.preventDefault(); // Evitar que el formulario recargue la página
 
     // Validar campos
     if (!email || !password) {
@@ -19,16 +35,14 @@ const Login = () => {
       return;
     }
 
-    if(email == "admin@epn.edu.ec"){
-      setRol('administrador')
-      setUsuario('Administrador')
+    if (email === "admin@epn.edu.ec") {
+      setRol('administrador');
+      setUsuario('Administrador');
       setPaginaActual('Home');
-    }else{
-      setRol('docente')
-      setUsuario('Mario Romero')
+    } else {
+      setRol('docente');
       setPaginaActual('Cursos');
     }
-
   };
 
   return (
@@ -76,3 +90,4 @@ const Login = () => {
 };
 
 export default Login;
+

@@ -8,18 +8,17 @@ import RegistroNotas from './pages/RegistroNotas';
 import Estudiantes from './pages/Estudiantes';
 import EstudiantesCandidatos from './pages/EstudiantesCandidatos';
 import { useContextoGlobal } from './ContextoGlobal';
-import PerfilProfesor from './pages/Profesor';
-import { Profesor as TipoProfesor } from './types/Capacitaciones';
 import TablaProfesores from './components/TablaProfesores';
 import SeguimientoSilabo from './components/SeguimientoSilabo';
 import RegistroAvance from './components/RegistroAvance';
 import RegistroAsistencia from './components/RegistroAsistencia';
 import Asistencia from './pages/Asistencia';
 import { Umbral } from './pages/Umbral';
+import Profesor from './pages/Profesor';
 
 
 function App() {
-  const { paginaActual, rol, profesor } = useContextoGlobal()
+  const { paginaActual, rol } = useContextoGlobal()
   const [isSemesterClosed, setIsSemesterClosed] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState('SeguimientoSilabo');
   const handleSemesterToggle = (isClosed: boolean) => {
@@ -58,11 +57,11 @@ function App() {
     if (rol === 'administrador') {
       switch (paginaActual) {
         case 'Profesor':
-          return profesor ? <PerfilProfesor profesor={profesor} /> : <div>No se ha seleccionado ningún profesor</div>;
+          return <Profesor/> 
         case 'Home':
           return (
             <>
-              <Asignatura cerrarSemestre={() => console.log('Cerrando semestre')}>
+              <Asignatura cerrarSemestre={() => setIsSemesterClosed(true)}>
                 <Componente_profesor id="Profesores" />
                 <Componente_asignatura id="Asignaturas" />
               </Asignatura>
@@ -75,7 +74,7 @@ function App() {
         case 'Cursos':
           return <Cursos />
         case 'Capacitaciones':
-          return <Capacitaciones />
+          return <Capacitaciones estadoSemestre={isSemesterClosed} />;
         case 'Home':
           return (
             <Asignatura cerrarSemestre={handleSemesterToggle}>
