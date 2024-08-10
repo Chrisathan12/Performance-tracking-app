@@ -1,4 +1,7 @@
 from behave import *
+from django.db import transaction
+from django.conf import settings
+from django.test.utils import setup_test_environment
 
 from syncademic.models.capacitacion import Capacitacion
 from syncademic.utils import AreaDocente, AreaCapacitacion
@@ -14,7 +17,6 @@ from syncademic.models.periodo import Periodo
 # from syncademic.services.seguimiento_malla_service import SeguimientoService
 
 #use_step_matcher("re")
-
 
 @step('que un docente tiene como areas afines "{areas_afines}"')
 def step_impl(context, areas_afines):
@@ -43,13 +45,14 @@ def step_impl(context, area):
         'area': area,
         'periodo': periodo
     }
-    service.save_capacitacion(data)
-    try:
-        capacitacion = Capacitacion.objects.filter(area=area, docente__id_docente=service.id_docente)
-        assert capacitacion is not None
-    except Capacitacion.DoesNotExist:
-        assert False, f'No se encontró una capacitación en el área de {area}'
-
+    with transaction.atomic():
+        service.save_capacitacion(data)
+        try:
+            capacitacion = Capacitacion.objects.filter(area=area, docente__id_docente=service.id_docente)
+            assert capacitacion is not None
+            transaction.set_rollback(True)
+        except Capacitacion.DoesNotExist:
+            assert False, f'No se encontró una capacitación en el área de {area}'
 
 @step('su puntuación final será de "{puntuacion_final}"')
 def step_impl(context, puntuacion_final):
@@ -61,11 +64,11 @@ def step_impl(context, puntuacion_final):
             area_encontrada = True
             context.docente.puntaje_actual += 1
             break
-
-    context.docente.save()
-    puntuacion_final = int(puntuacion_final)
-
-    assert context.docente.puntaje_actual == puntuacion_final
+    with transaction.atomic():
+        context.docente.save()
+        puntuacion_final = int(puntuacion_final)
+        assert context.docente.puntaje_actual == puntuacion_final
+        transaction.set_rollback(True)
 
 
 @step('que el docente tiene "{capacitaciones}" registradas')
@@ -74,10 +77,26 @@ def step_impl(context, capacitaciones):
         :type context: behave.runner.Context
         :type capacitaciones: str
     """
-    faker = Faker()
-    context.docente = AreaDocente(faker.name)
-    context.docente.capacitaciones = int(capacitaciones)
-    assert context.docente.capacitaciones == int(capacitaciones)
+    context.docente = Docente.objects.get(id_docente=2)
+    service = CapacitacionService()
+    service.id_docente = 2
+    if int(capacitaciones) != 0:
+        periodo = Periodo.objects.get(id_periodo=1)
+
+        data = {
+            'id_docente': service.id_docente,
+            'nombre_capacitacion': 'Capacitación de Prueba',
+            'area': 'Fisica',
+            'periodo': periodo
+        }
+        with transaction.atomic():
+            service.save_capacitacion(data)
+            context.docente.capacitaciones = Capacitacion.objects.filter(docente__id_docente=service.id_docente).count()
+            assert context.docente.capacitaciones == int(capacitaciones)
+            transaction.set_rollback(True)
+    else:
+        context.docente.capacitaciones = Capacitacion.objects.filter(docente__id_docente=service.id_docente).count()
+        assert context.docente.capacitaciones == int(capacitaciones)
 
 
 @step('se marca al registro del docente como "{estado}"')
@@ -87,11 +106,14 @@ def step_impl(context, estado):
     :type estado: str
     """
     if context.docente.capacitaciones == 0:
-        context.docente.estado = "incompleto"
+        context.docente.estado_capacitacion = "incompleto"
     else:
-        context.docente.estado = "completo"
+        context.docente.estado_capacitacion = "completo"
 
-    assert context.docente.estado == estado
+    with transaction.atomic():
+        context.docente.save()
+        assert context.docente.estado_capacitacion == estado
+        transaction.set_rollback(True)
 
 
 @step('la institución decide que "{envia}" un denota al docente')

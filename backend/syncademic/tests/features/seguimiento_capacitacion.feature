@@ -17,9 +17,9 @@ Esquema del escenario: Puntuación de capacitaciones por area afín
   Cuando el docente registra una capacitación en el área de "<area>"
   Entonces su puntuación final será de "<puntuacion_final>"
   Ejemplos:
-    | areas_afines        | puntuacion_inicial | area          | puntuacion_final |
+    | areas_afines        | puntuacion_inicial  | area          | puntuacion_final  |
     | Matematicas,Fisica  | 124                 | Matematicas   | 125               |
-    | Matematicas,Fisica  | 125                 | Historia      | 125               |
+    | Matematicas,Fisica  | 124                 | Historia      | 124               |
 
 Esquema del escenario: Identificación de incumplimiento en el registro de capacitaciones
   Dado que el docente tiene "<capacitaciones>" registradas
@@ -27,5 +27,5 @@ Esquema del escenario: Identificación de incumplimiento en el registro de capac
   Y la institución decide que "<envia>" un denota al docente
   Ejemplos:
   | capacitaciones  | estado     | envia |
-  | 1               | completo   | si    |
-  | 0               | incompleto | no    |
+  | 0               | incompleto | si    |
+  | 1               | completo   | no    |
