@@ -35,7 +35,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { agregarCapacitacion, obtenerAreas } from '../services/Capacitaciones'; 
 import { useContextoGlobal } from '../ContextoGlobal';
-import type { Area, Capacitacion } from '../types/Capacitaciones';
+import type { Area} from '../types/Capacitaciones';
 
 type FormularioCapacitacionProps = {
   actualizarCapacitaciones: () => void;
