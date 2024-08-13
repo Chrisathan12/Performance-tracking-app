@@ -35,7 +35,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { agregarCapacitacion, obtenerAreas } from '../services/Capacitaciones'; 
 import { useContextoGlobal } from '../ContextoGlobal';
-import type { Area } from '../types/Capacitaciones';
+import type { Area, Capacitacion } from '../types/Capacitaciones';
 
 type FormularioCapacitacionProps = {
   actualizarCapacitaciones: () => void;
@@ -73,10 +73,10 @@ function FormularioCapacitacion({ actualizarCapacitaciones, estadoSemestre }: Fo
     evento.preventDefault(); 
 
     const data = {
-      docente: docente?.id_docente || 0, 
+      docente_id: docente?.id_docente || 0, 
       nombre_capacitacion: nombreCapacitacion,
       area: areaSeleccionada,
-      periodo: periodoActivo || 0 
+      periodo_id: periodoActivo || 0 
     };
 
     try {
