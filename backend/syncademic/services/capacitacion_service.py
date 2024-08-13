@@ -2,7 +2,7 @@ from ..exceptions.not_found import ObjectNotFound
 from ..models.asignatura import Asignatura
 from ..models.docente import Docente
 from ..models.capacitacion import Capacitacion
-from ..models.puntuacion_docente import Puntuacion_docente
+from ..services.asignatura_service import AsignaturaService
 
 class CapacitacionService:
 
@@ -45,8 +45,33 @@ class CapacitacionService:
                 periodo=data['periodo']
             )
 
+            self.aumentar_puntaje(docente_bd.id_docente, data['area'])
+            docente_bd.estado_capacitacion = 'completo'
+            docente_bd.save()
+
         except Exception as e:
             raise ObjectNotFound(Capacitacion._meta.model_name, detail=str(e))
+
+    def aumentar_puntaje(self, id_docente, area_ingresada):
+        docente_bd = Docente.objects.get(id_docente=id_docente)
+        asignatura_service = AsignaturaService()
+        areas = asignatura_service.get_areas_por_docente(docente_id=docente_bd.id_docente)
+
+        for area in areas:
+            if area['area'] == area_ingresada:
+                if isinstance(docente_bd.puntaje_actual, str):
+                    docente_bd.puntaje_actual = int(docente_bd.puntaje_actual)
+                docente_bd.puntaje_actual += 1
+                docente_bd.save()
+                break
+
+        return docente_bd.puntaje_actual
+
+    def cambiar_estado(self, id_docente):
+        docente_bd = Docente.objects.get(id_docente=id_docente)
+        docente_bd.estado_capacitacion = 'completo'
+        docente_bd.save()
+        return docente_bd.estado_capacitacion
 
     def get_alertas(self):
         alerta = {

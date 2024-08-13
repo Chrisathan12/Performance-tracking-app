@@ -61,7 +61,7 @@ function TablaCapacitaciones({ capacitaciones }: TablaCapacitacionesProps) {
   };
 
   const capacitacionesFiltradas = semestreSeleccionado
-    ? capacitaciones.filter(cap => cap.periodo === semestreSeleccionado)
+    ? capacitaciones.filter(cap => cap.periodo_id=== semestreSeleccionado)
     : capacitaciones;
 
   return (

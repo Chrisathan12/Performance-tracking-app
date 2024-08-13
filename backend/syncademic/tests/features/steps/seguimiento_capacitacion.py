@@ -4,17 +4,11 @@ from django.conf import settings
 from django.test.utils import setup_test_environment
 
 from syncademic.models.capacitacion import Capacitacion
-from syncademic.utils import AreaDocente, AreaCapacitacion
-from faker import Faker
-
-from syncademic.utils.capacitaciones_utils import ControlAreas
 from syncademic.services.asignatura_service import AsignaturaService
 from syncademic.services.capacitacion_service import CapacitacionService
 from syncademic.models.docente import Docente
 from syncademic.models.periodo import Periodo
 
-
-# from syncademic.services.seguimiento_malla_service import SeguimientoService
 
 #use_step_matcher("re")
 
@@ -56,18 +50,12 @@ def step_impl(context, area):
 
 @step('su puntuación final será de "{puntuacion_final}"')
 def step_impl(context, puntuacion_final):
-    context.docente.puntaje_actual = int(context.docente.puntaje_actual)
-
-    for area_dict in context.areas_afines:
-        area_afine = area_dict.get('area')
-        if context.area == area_afine:
-            area_encontrada = True
-            context.docente.puntaje_actual += 1
-            break
-    with transaction.atomic():
-        context.docente.save()
+    service = CapacitacionService()
+    with (transaction.atomic()):
+        puntaje_esperado = service.aumentar_puntaje(context.docente.id_docente, context.area)
         puntuacion_final = int(puntuacion_final)
-        assert context.docente.puntaje_actual == puntuacion_final
+        puntaje_esperado = int(puntaje_esperado)
+        assert puntaje_esperado == puntuacion_final
         transaction.set_rollback(True)
 
 
@@ -105,14 +93,12 @@ def step_impl(context, estado):
     :type context: behave.runner.Context
     :type estado: str
     """
-    if context.docente.capacitaciones == 0:
-        context.docente.estado_capacitacion = "incompleto"
-    else:
-        context.docente.estado_capacitacion = "completo"
-
+    service = CapacitacionService()
+    estado_esperado = 'incompleto'
     with transaction.atomic():
-        context.docente.save()
-        assert context.docente.estado_capacitacion == estado
+        if context.docente.capacitaciones != 0:
+            estado_esperado = service.cambiar_estado(id_docente=context.docente.id_docente)
+        assert estado_esperado == estado
         transaction.set_rollback(True)
 
 

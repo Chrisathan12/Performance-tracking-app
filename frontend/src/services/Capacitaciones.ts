@@ -109,16 +109,69 @@ export const obtenerPuntajes = async (idDocente: number): Promise<Historico[]> =
     .catch(error => handleError(error, `Error al obtener el docente ${idDocente}`));
 };
 
-// Crear nueva capacitación
-export const agregarCapacitacion = async ( data: Omit<Capacitacion, 'id_capacitacion'>) => {
-  const url = `${API_URL}`;
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-    .then(handleResponse)
-    .catch(error => handleError(error, 'Error al agregar la capacitación'));
+/// Crear nueva capacitación
+export const agregarCapacitacion = async (data: Omit<Capacitacion, 'id_capacitacion'>) => {
+  try {
+    // Primeramente, se hace la llamada POST para crear la capacitación
+    const responsePost = await fetch('http://127.0.0.1:8000/syncademic/capacitacion/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const dataPost = await responsePost.json();
+    if (!responsePost.ok) {
+      console.error('Error al crear capacitación:', dataPost);
+      return;
+    }
+    console.log('Capacitación creada:', dataPost);
+
+    // Obtener el ID del docente y el área de la respuesta
+    const docenteId = dataPost.docente;
+    const area = dataPost.area;
+
+    // Realizar la llamada PUT para aumentar el puntaje
+    const responsePut = await fetch('http://127.0.0.1:8000/syncademic/capacitacion/capacitacionAumentarPuntaje/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        docente_id: docenteId, // Asegúrate de que coincida con el backend
+        area: area,
+      }),
+    });
+
+    const dataPut = await responsePut.json();
+    if (!responsePut.ok) {
+      console.error('Error al aumentar puntaje:', dataPut);
+      return;
+    }
+    console.log('Puntaje aumentado:', dataPut);
+
+    // Realizar la llamada PUT para cambiar el estado del docente
+    const responseEstado = await fetch('http://127.0.0.1:8000/syncademic/capacitacion/capacitacionCambiarEstado/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        docente_id: docenteId, // Asegúrate de que coincida con el backend
+      }),
+    });
+
+    const dataEstado = await responseEstado.json();
+    if (!responseEstado.ok) {
+      console.error('Error al cambiar estado:', dataEstado);
+      return;
+    }
+    console.log('Estado cambiado correctamente:', dataEstado);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 

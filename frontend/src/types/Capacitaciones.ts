@@ -1,10 +1,10 @@
 
 export type Capacitacion = {
   id_capacitacion: number;
-  docente: number; // ID del docente
+  docente_id: number; // ID del docente
   nombre_capacitacion: string;
   area: string;
-  periodo: number;
+  periodo_id: number;
 };
 
 export type Docente = {
